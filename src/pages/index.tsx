@@ -1,36 +1,44 @@
-import { Box } from "@mui/material";
-import { Inter } from "next/font/google";
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { fatchProducts } from "../store/slices/productSlice";
-import ProductCard from "../components/productCard";
-const inter = Inter({ subsets: ["latin"] });
+import Products from "../components/product";
+import { Container } from "@mui/material";
+import { Product } from "@prisma/client";
+import SearchProducts from "../components/searchProduct";
 
-export default function Home() {
+const Home = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.items);
 
+  const [filterProducts, setFilterProducts] = useState<Product[]>([]);
+
   useEffect(() => {
     dispatch(fatchProducts());
-  });
+  }, []);
+
+  useEffect(() => {
+    if (products.length) {
+      setFilterProducts(products);
+    }
+  }, [products]);
+
   return (
-    <Box
+    <Container
       sx={{
         display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+        mt: 5,
       }}
     >
-      {products.map((product) => (
-        <Box sx={{ mr: 5, mb: 3 }} key={product.id}>
-          <ProductCard
-            title={product.title}
-            description={product.description}
-            imageUrl={product.imageurl}
-          />
-        </Box>
-      ))}
-    </Box>
+      <SearchProducts
+        products={products}
+        setFilterProducts={setFilterProducts}
+      />
+
+      <Products products={filterProducts} />
+    </Container>
   );
-}
+};
+
+export default Home;

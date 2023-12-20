@@ -1,6 +1,6 @@
-import { ProductSlice } from "@/types/product";
-import { config } from "@/utils/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { ProductSlice } from "../../types/product";
+import { config } from "../../utils/config";
 const initialState: ProductSlice = {
   items: [],
   isLoading: false,
