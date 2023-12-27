@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { fatchProducts } from "../store/slices/productSlice";
-import Products from "../components/product";
-import { Container } from "@mui/material";
+import ProductsCard from "../components/productsCard";
+import { Box, Container, Typography, colors } from "@mui/material";
 import { Product } from "@prisma/client";
-import SearchProducts from "../components/searchProduct";
+import SearchProducts from "../components/searchProducts";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Link from "next/link";
 
 const Home = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector((state) => state.products.items);
+  const cartItems = useAppSelector((state) => state.cart.items);
 
   const [filterProducts, setFilterProducts] = useState<Product[]>([]);
 
@@ -23,20 +26,31 @@ const Home = () => {
   }, [products]);
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mt: 5,
-      }}
-    >
-      <SearchProducts
-        products={products}
-        setFilterProducts={setFilterProducts}
-      />
-
-      <Products products={filterProducts} />
+    <Container sx={{ mt: 5 }}>
+      <Link
+        href={"/shopping-cart"}
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          textDecoration: "none",
+        }}
+      >
+        <ShoppingCartIcon sx={{ fontSize: "2.5rem", color: "black" }} />
+        {cartItems.length > 0 && <Typography>{cartItems.length}</Typography>}
+      </Link>
+      <Container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <SearchProducts
+          products={products}
+          setFilterProducts={setFilterProducts}
+        />
+        <ProductsCard products={filterProducts} />
+      </Container>
     </Container>
   );
 };
