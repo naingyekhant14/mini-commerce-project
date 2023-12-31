@@ -8,14 +8,13 @@ const confirmation = () => {
   const router = useRouter();
   const dispart = useAppDispatch();
   const [open, setOpen] = useState(false);
-
   const { orderId, status } = router.query;
 
   const onSuccess = () => {
     setOpen(true);
     setTimeout(() => {
       router.push("/");
-    }, 2000);
+    }, 3000);
   };
 
   const handleCancleOeder = () => {

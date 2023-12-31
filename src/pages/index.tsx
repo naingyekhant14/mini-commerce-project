@@ -36,7 +36,9 @@ const Home = () => {
         }}
       >
         <ShoppingCartIcon sx={{ fontSize: "2.5rem", color: "black" }} />
-        {cartItems.length > 0 && <Typography>{cartItems.length}</Typography>}
+        {cartItems.length > 0 && (
+          <Typography sx={{ color: "red" }}>{cartItems.length}</Typography>
+        )}
       </Link>
       <Container
         sx={{
