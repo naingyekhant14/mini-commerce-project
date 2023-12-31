@@ -3,11 +3,13 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { Box, Button, Typography } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { updateQuantity } from "../../store/slices/cardSlice";
+import { createOrder, updateQuantity } from "../../store/slices/cardSlice";
+import { useRouter } from "next/router";
 
 const Cart = () => {
   const disPatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
+  const router = useRouter();
 
   const getCartTotalPrice = () => {
     let totalPrice = 0;
@@ -15,16 +17,22 @@ const Cart = () => {
     return totalPrice;
   };
 
-  const increaseQuantity = (id: number, quantity: number) => {
+  const handleUpdateQuantity = (id: number, quantity: number) => {
     disPatch(updateQuantity({ id, quantity }));
   };
 
-  const decreaseQuantity = (id: number, quantity: number) => {
-    disPatch(updateQuantity({ id, quantity }));
+  const onSuccess = (data: any) => {
+    console.log(data);
+    router.push(`/confirmation?orderId=${data.orderId}&status=${data.status}`);
+  };
+  const onError = () => {};
+
+  const handleCreateOrder = async () => {
+    disPatch(createOrder({ payload: cartItems, onError, onSuccess }));
   };
 
   return (
-    <Box>
+    <>
       <Box
         sx={{
           display: "flex",
@@ -57,14 +65,18 @@ const Cart = () => {
                 <Box sx={{ display: "flex", alignItems: "center", ml: 5 }}>
                   <RemoveCircleOutlineIcon
                     sx={{ fontSize: 40, color: "red", cursor: "pointer" }}
-                    onClick={() => increaseQuantity(item.id, item.quantity - 1)}
+                    onClick={() =>
+                      handleUpdateQuantity(item.id, item.quantity - 1)
+                    }
                   />
                   <Typography variant="h4" sx={{ mx: 2 }}>
                     {item.quantity}
                   </Typography>
                   <AddCircleOutlineIcon
                     sx={{ fontSize: 40, color: "green", cursor: "pointer" }}
-                    onClick={() => increaseQuantity(item.id, item.quantity + 1)}
+                    onClick={() =>
+                      handleUpdateQuantity(item.id, item.quantity + 1)
+                    }
                   />
                 </Box>
               </Box>
@@ -87,12 +99,17 @@ const Cart = () => {
           <Typography variant="h3">
             Total Price :{getCartTotalPrice()}
           </Typography>
-          <Button variant="contained" sx={{ width: "fit-content", my: 3 }}>
+
+          <Button
+            onClick={handleCreateOrder}
+            variant="contained"
+            sx={{ width: "fit-content", my: 3 }}
+          >
             Confirm Order
           </Button>
         </Box>
       )}
-    </Box>
+    </>
   );
 };
 

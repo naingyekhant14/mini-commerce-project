@@ -45,10 +45,6 @@ const Products = ({ products }: Props) => {
                   </Typography>
                   <Typography>{product.description}</Typography>
                 </CardContent>
-                <CardActions>
-                  <Button size="small">View</Button>
-                  <Button size="small">Edit</Button>
-                </CardActions>
               </Card>
             </Link>
           </Grid>
