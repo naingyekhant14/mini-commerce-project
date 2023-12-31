@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CartType, CreateOrderOption } from "../../types/cart";
+import {
+  CancleOrderOption,
+  CartType,
+  CreateOrderOption,
+} from "../../types/cart";
 import { config } from "../../utils/config";
 
 const initialState: CartType = {
@@ -7,6 +11,7 @@ const initialState: CartType = {
   isLoading: false,
   error: null,
 };
+
 export const createOrder = createAsyncThunk(
   "cart/confirmOrder",
   async (options: CreateOrderOption, thunkApi) => {
@@ -21,6 +26,21 @@ export const createOrder = createAsyncThunk(
       });
       const dataFromServer = await response.json();
       onSuccess && onSuccess(dataFromServer);
+    } catch (error) {
+      onError && onError(error);
+    }
+  }
+);
+
+export const cancleOrder = createAsyncThunk(
+  "cart/confirmOrder",
+  async (options: CancleOrderOption, thunkApi) => {
+    const { orderId, onSuccess, onError } = options;
+    try {
+      await fetch(`${config.apiBaseUrl}/order/${orderId}`, {
+        method: "DELETE",
+      });
+      onSuccess && onSuccess();
     } catch (error) {
       onError && onError(error);
     }
